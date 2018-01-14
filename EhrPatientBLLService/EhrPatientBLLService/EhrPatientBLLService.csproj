@@ -178,6 +178,7 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\PatientController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -254,6 +255,10 @@
     <Content Include="Scripts\jquery-1.10.2.min.map" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\BusinessEntity\BusinessEntity.csproj">
+      <Project>{7dbab6af-9af2-4a4b-a899-c42397bd7015}</Project>
+      <Name>BusinessEntity</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SAL\SAL.csproj">
       <Project>{fd9c407e-bbcf-4534-b032-75909d373e2b}</Project>
       <Name>SAL</Name>
