@@ -11,6 +11,11 @@ namespace SAL
 {
     public static class ServiceHelper
     {
+        public const string urlGetPatientByID = "";
+        public const string urlGetPatientByIPIN = "";
+        public const string urlSavePatient = "";
+        public const string urlUpdatePatient = "";
+
         public static ServiceResponseBE GetPOSTResponse(Uri uri, string data)
         {
             ServiceResponseBE respMsg = new ServiceResponseBE();
