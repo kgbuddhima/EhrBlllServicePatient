@@ -10,6 +10,13 @@ namespace SAL
     public interface IServiceProvider
     {
         /// <summary>
+        /// Deactivate patient
+        /// </summary>
+        /// <param name="patientId"></param>
+        /// <returns></returns>
+        bool Deactivatepatient(int patientId);
+
+        /// <summary>
         /// Get patient by PatientId or PIn
         /// </summary>
         /// <param name="value"></param>
@@ -31,17 +38,10 @@ namespace SAL
         Patient GetPatient(string pin);
 
         /// <summary>
-        /// Insert new patinet and return full atient objact
+        /// Insert/Update patinet and return full atient objact
         /// </summary>
         /// <param name="patient"></param>
         /// <returns></returns>
         Patient SavePatient(Patient patient);
-
-        /// <summary>
-        /// Update patient
-        /// </summary>
-        /// <param name="patient"></param>
-        /// <returns></returns>
-        bool UpdatePatient(Patient patient);
     }
 }

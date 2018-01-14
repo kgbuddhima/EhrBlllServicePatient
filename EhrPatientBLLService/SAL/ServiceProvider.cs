@@ -9,12 +9,33 @@ using System.Threading.Tasks;
 using BusinessEntity;
 using Utility;
 using Newtonsoft.Json;
- 
+
 namespace SAL
 {
     public class ServiceProvider : IServiceProvider
     {
         ServiceResponseBE response;
+
+        /// <summary>
+        /// Deactivate patient
+        /// </summary>
+        /// <param name="patientId"></param>
+        /// <returns></returns>
+        public bool Deactivatepatient(int patientId)
+        {
+            try
+            {
+                if (patientId > 0)
+                {
+                    return true;
+                }
+                else return false;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
 
         /// <summary>
         /// Get patient by PatientId or PIn
@@ -29,7 +50,7 @@ namespace SAL
                 {
                     if (value.Length <= 10)
                     {
-                        return GetPatient(UtilityLibrary.GetValueInt(value,0));
+                        return GetPatient(UtilityLibrary.GetValueInt(value, 0));
                     }
                     else
                     {
@@ -55,7 +76,7 @@ namespace SAL
             try
             {
                 response = ServiceHelper.GetPOSTResponse(
-                    new Uri(ServiceHelper.urlGetPatientByID),UtilityLibrary.GetValueString(patientId));
+                    new Uri(ServiceHelper.urlGetPatientByID), UtilityLibrary.GetValueString(patientId));
                 if (response.HttpStatusCode == HttpStatusCode.OK)
                 {
                     patinet = JsonConvert.DeserializeObject<Patient>(response.ResponseMessage);
@@ -82,10 +103,10 @@ namespace SAL
             Patient patinet = null;
             try
             {
-                if(!string.IsNullOrWhiteSpace(pin))
+                if (!string.IsNullOrWhiteSpace(pin))
 
-                response = ServiceHelper.GetPOSTResponse(
-                    new Uri(ServiceHelper.urlGetPatientByIPIN), UtilityLibrary.GetValueString(pin));
+                    response = ServiceHelper.GetPOSTResponse(
+                        new Uri(ServiceHelper.urlGetPatientByIPIN), UtilityLibrary.GetValueString(pin));
                 if (response.HttpStatusCode == HttpStatusCode.OK)
                 {
                     patinet = JsonConvert.DeserializeObject<Patient>(response.ResponseMessage);
@@ -95,6 +116,60 @@ namespace SAL
                     patinet = null;
                 }
                 return patinet;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// Insert/Update patinet and return full atient objact
+        /// </summary>
+        /// <param name="patient"></param>
+        /// <returns></returns>
+        public Patient SavePatient(Patient patient)
+        {
+            try
+            {
+                if (patient == null) throw new ArgumentNullException();
+
+                if (patient.PatientId > 0)
+                {
+                   return InsertPatient(patient);
+                }
+                else
+                {
+                    return UpdatePatient(patient); 
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        #region Private Methods
+
+        /// <summary>
+        /// Get Next patient ID
+        /// </summary>
+        /// <param name="pin"></param>
+        /// <returns></returns>
+        private int GetNextPatientID()
+        {
+            try
+            {
+                response = ServiceHelper.GetPOSTResponse(
+                    new Uri(ServiceHelper.urlGetNextpatintID), string.Empty);
+                if (response.HttpStatusCode == HttpStatusCode.OK)
+                {
+                    return JsonConvert.DeserializeObject<int>(response.ResponseMessage);
+                }
+                else
+                {
+                    return 0;
+                }
             }
             catch (Exception ex)
             {
@@ -107,23 +182,61 @@ namespace SAL
         /// </summary>
         /// <param name="patient"></param>
         /// <returns></returns>
-        public Patient SavePatient(Patient patient)
+        private Patient InsertPatient(Patient patient)
         {
-            Patient patinet = null;
+            Patient _patinet = null;
+            try
+            { 
+                patient.PatientId = GetNextPatientID();
+                patient.PIN = string.Format("P{0}", UtilityLibrary.GetValueString(patient.PatientId).PadLeft(9, '0'));
+                Genaralizepatient(patient);
+
+                if (patient.PatientId > 0)
+                {
+                    string msg = JsonConvert.SerializeObject(patient);
+                    response = ServiceHelper.GetPOSTResponse(
+                        new Uri(ServiceHelper.urlSavePatient), UtilityLibrary.GetValueString(msg));
+                    if (response.HttpStatusCode == HttpStatusCode.OK)
+                    {
+                        _patinet = JsonConvert.DeserializeObject<Patient>(response.ResponseMessage);
+                    }
+                    else
+                    {
+                        _patinet = null;
+                    }
+                }
+                else throw new NotImplementedException();
+
+                return _patinet;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+                                          
+        /// <summary>
+        /// Update patient
+        /// </summary> 
+        /// <param name="patient"></param>
+        /// <returns></returns>
+        private Patient UpdatePatient(Patient patient)
+        {
             try
             {
-                string msg = JsonConvert.SerializeObject(patinet);
+                Genaralizepatient(patient);
+
+                string msg = JsonConvert.SerializeObject(patient);
                 response = ServiceHelper.GetPOSTResponse(
                     new Uri(ServiceHelper.urlSavePatient), UtilityLibrary.GetValueString(msg));
                 if (response.HttpStatusCode == HttpStatusCode.OK)
                 {
-                    patinet = JsonConvert.DeserializeObject<Patient>(response.ResponseMessage);
+                    return GetPatient(patient.PatientId);
                 }
                 else
                 {
-                    patinet = null;
+                    return null;
                 }
-                return patinet;
             }
             catch (Exception ex)
             {
@@ -132,30 +245,27 @@ namespace SAL
         }
 
         /// <summary>
-        /// Update patient
+        /// Trim and correct null values in patient
         /// </summary>
         /// <param name="patient"></param>
-        /// <returns></returns>
-        public bool UpdatePatient(Patient patient)
+        private static void Genaralizepatient(Patient patient)
         {
-            try
+            patient.NIC = UtilityLibrary.GetValueString(patient.NIC);
+            patient.PatientName = UtilityLibrary.GetValueString(patient.PatientName);
+            patient.Gender = UtilityLibrary.GetValueString(patient.Gender); 
+
+            if (patient.Address != null)
             {
-                string msg = JsonConvert.SerializeObject(patient);
-                response = ServiceHelper.GetPOSTResponse(
-                    new Uri(ServiceHelper.urlSavePatient), UtilityLibrary.GetValueString(msg));
-                if (response.HttpStatusCode == HttpStatusCode.OK)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
+                patient.Address.AddressL1 = UtilityLibrary.GetValueString(patient.Address.AddressL1);
+                patient.Address.AddressL2 = UtilityLibrary.GetValueString(patient.Address.AddressL2);
+                patient.Address.AddressL3 = UtilityLibrary.GetValueString(patient.Address.AddressL3);
+                patient.Address.PostCode = UtilityLibrary.GetValueString(patient.Address.PostCode);
+                patient.Address.City = UtilityLibrary.GetValueString(patient.Address.City);
+                patient.Address.Country = UtilityLibrary.GetValueString(patient.Address.Country);
             }
         }
+
+        #endregion
     }
 }
+ 
