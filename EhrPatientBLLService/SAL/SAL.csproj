@@ -49,6 +49,7 @@
     <Compile Include="ServiceHelper.cs" />
     <Compile Include="ServiceProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SvcURLs\SvcUrls.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BusinessEntity\BusinessEntity.csproj">
