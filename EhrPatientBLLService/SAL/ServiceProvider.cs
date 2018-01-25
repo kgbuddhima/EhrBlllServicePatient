@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using BusinessEntity;
 using Utility;
 using Newtonsoft.Json;
+using SAL.SvcURLs;
 
 namespace SAL
 {
@@ -21,15 +22,22 @@ namespace SAL
         /// </summary>
         /// <param name="patientId"></param>
         /// <returns></returns>
-        public bool Deactivatepatient(int patientId)
+        public bool DeletePatient(int patientId)
         {
+            bool deleted = false;
             try
             {
-                if (patientId > 0)
+                response = ServiceHelper.GetPOSTResponse(
+                    new Uri(SvcUrls.urlDeletePatient), UtilityLibrary.GetValueString(patientId));
+                if (response.HttpStatusCode == HttpStatusCode.OK)
                 {
-                    return true;
+                    string resp = JsonConvert.DeserializeObject<string>(response.ResponseMessage);
+                    if (resp == CommonUnit.oSuccess)
+                    {
+                        deleted = true;
+                    }
                 }
-                else return false;
+                return deleted;
             }
             catch (Exception ex)
             {
@@ -76,7 +84,7 @@ namespace SAL
             try
             {
                 response = ServiceHelper.GetPOSTResponse(
-                    new Uri(ServiceHelper.urlGetPatientByID), UtilityLibrary.GetValueString(patientId));
+                    new Uri(SvcUrls.urlGetPatientByID), UtilityLibrary.GetValueString(patientId));
                 if (response.HttpStatusCode == HttpStatusCode.OK)
                 {
                     patinet = JsonConvert.DeserializeObject<Patient>(response.ResponseMessage);
@@ -106,7 +114,7 @@ namespace SAL
                 if (!string.IsNullOrWhiteSpace(pin))
 
                     response = ServiceHelper.GetPOSTResponse(
-                        new Uri(ServiceHelper.urlGetPatientByIPIN), UtilityLibrary.GetValueString(pin));
+                        new Uri(SvcUrls.urlGetPatientByPIN), UtilityLibrary.GetValueString(pin));
                 if (response.HttpStatusCode == HttpStatusCode.OK)
                 {
                     patinet = JsonConvert.DeserializeObject<Patient>(response.ResponseMessage);
@@ -116,6 +124,31 @@ namespace SAL
                     patinet = null;
                 }
                 return patinet;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// Get Patient Collection
+        /// </summary>
+        /// <returns></returns>
+        public List<Patient> GetPatientCollection()
+        {
+            try
+            {
+                response = ServiceHelper.GetPOSTResponse(
+                    new Uri(SvcUrls.urlGetPatientCollection), UtilityLibrary.GetValueString(""));
+                if (response.HttpStatusCode == HttpStatusCode.OK)
+                {
+                    return JsonConvert.DeserializeObject<List<Patient>>(response.ResponseMessage);
+                }
+                else
+                {
+                    throw new NullReferenceException();
+                }
             }
             catch (Exception ex)
             {
@@ -161,7 +194,7 @@ namespace SAL
             try
             {
                 response = ServiceHelper.GetPOSTResponse(
-                    new Uri(ServiceHelper.urlGetNextpatintID), string.Empty);
+                    new Uri(SvcUrls.urlGetNextPatientID), string.Empty);
                 if (response.HttpStatusCode == HttpStatusCode.OK)
                 {
                     return JsonConvert.DeserializeObject<int>(response.ResponseMessage);
@@ -195,7 +228,7 @@ namespace SAL
                 {
                     string msg = JsonConvert.SerializeObject(patient);
                     response = ServiceHelper.GetPOSTResponse(
-                        new Uri(ServiceHelper.urlSavePatient), UtilityLibrary.GetValueString(msg));
+                        new Uri(SvcUrls.urlInsertPatient), UtilityLibrary.GetValueString(msg));
                     if (response.HttpStatusCode == HttpStatusCode.OK)
                     {
                         _patinet = JsonConvert.DeserializeObject<Patient>(response.ResponseMessage);
@@ -228,7 +261,7 @@ namespace SAL
 
                 string msg = JsonConvert.SerializeObject(patient);
                 response = ServiceHelper.GetPOSTResponse(
-                    new Uri(ServiceHelper.urlSavePatient), UtilityLibrary.GetValueString(msg));
+                    new Uri(SvcUrls.urlUpdatePatient), UtilityLibrary.GetValueString(msg));
                 if (response.HttpStatusCode == HttpStatusCode.OK)
                 {
                     return GetPatient(patient.PatientId);

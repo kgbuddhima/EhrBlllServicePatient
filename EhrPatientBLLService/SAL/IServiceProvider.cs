@@ -14,7 +14,7 @@ namespace SAL
         /// </summary>
         /// <param name="patientId"></param>
         /// <returns></returns>
-        bool Deactivatepatient(int patientId);
+        bool DeletePatient(int patientId);
 
         /// <summary>
         /// Get patient by PatientId or PIn
@@ -29,6 +29,12 @@ namespace SAL
         /// <param name="patientId"></param>
         /// <returns></returns>
         Patient GetPatient(int patientId);
+
+        /// <summary>
+        /// Get Patient Collection
+        /// </summary>
+        /// <returns></returns>
+        List<Patient> GetPatientCollection();
 
         /// <summary>
         /// Get patient by PIN
