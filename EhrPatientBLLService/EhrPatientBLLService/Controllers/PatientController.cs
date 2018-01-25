@@ -25,7 +25,7 @@ namespace EhrPatientBLLService.Controllers
         {
             try
             {
-                bool deactivated = _document.Deactivatepatient(id);
+                bool deactivated = _document.DeletePatient(id);
                 if (deactivated)
                 {
                     return Request.CreateResponse(HttpStatusCode.OK, CommonUnit.oSuccess);
@@ -79,11 +79,44 @@ namespace EhrPatientBLLService.Controllers
             }
         }
 
+        [Route("GetPatient")]
+        [HttpPost]
+        public HttpResponseMessage GetPatient(string value)
+        {
+            try
+            {
+                Patient patient = _document.GetPatientByAny(value);
+                if (patient != null)
+                {
+                    return Request.CreateResponse(HttpStatusCode.OK, patient);
+                }
+                else
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, CommonUnit.oFailed);
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }
+
         [Route("GetPatientsCollection")]
         [HttpPost]
-        public string GetPatientsCollection()
+        public HttpResponseMessage GetPatientsCollection()
         {
-            return string.Empty;
+            try
+            {
+                List<Patient> patientCol = _document.GetPatientCollection();
+                if (patientCol != null)
+                {
+                    return Request.CreateResponse(HttpStatusCode.OK, patientCol);
+                }
+                else
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, CommonUnit.oFailed);
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
+            }
         }
 
         [Route("SavePatient")]
