@@ -8,6 +8,8 @@ namespace SAL.SvcURLs
 {
     public static class SvcUrls
     {
+        public static string urlCheckPatientLogin = UtilityLibrary.GetAppSettingValue("urlCheckPatientLogin");
+        public static string urlCheckStaffLogin = UtilityLibrary.GetAppSettingValue("urlCheckStaffLogin");
         public static string urlDeletePatient = UtilityLibrary.GetAppSettingValue("urlDeletePatient");
         public static string urlGetPatientByPIN = UtilityLibrary.GetAppSettingValue("urlGetPatient");
         public static string urlGetPatientByID = UtilityLibrary.GetAppSettingValue("urlGetPatient");

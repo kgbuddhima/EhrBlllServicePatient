@@ -10,6 +10,20 @@ namespace SAL
     public interface IServiceProvider
     {
         /// <summary>
+        /// validate login credentials of patient member
+        /// </summary>
+        /// <param name="credentials"></param>
+        /// <returns>PatientID</returns>
+        int CheckPatientLogin(Credentials credentials);
+
+        /// <summary>
+        /// validate login credentials of staff member
+        /// </summary>
+        /// <param name="credentials"></param>
+        /// <returns>StaffID</returns>
+        int CheckStaffLogin(Credentials credentials);
+
+        /// <summary>
         /// Deactivate patient
         /// </summary>
         /// <param name="patientId"></param>
