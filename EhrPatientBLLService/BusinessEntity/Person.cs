@@ -15,5 +15,6 @@ namespace BusinessEntity
         public DateTime JoinedDate { get; set; }
         public DateTime UpdatedDate { get; set; }
         public int IsActive { get; set; }
+        public Credentials UserCredentials { get; set; }
     }
 }
