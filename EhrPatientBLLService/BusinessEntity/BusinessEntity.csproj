@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Address.cs" />
+    <Compile Include="Credentials.cs" />
     <Compile Include="Doctor.cs" />
     <Compile Include="Patient.cs" />
     <Compile Include="PatientHealthData.cs" />
