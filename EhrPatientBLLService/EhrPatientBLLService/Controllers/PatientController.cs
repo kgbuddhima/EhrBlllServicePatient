@@ -10,6 +10,7 @@ using SAL;
 
 namespace EhrPatientBLLService.Controllers
 {
+    [RoutePrefix("api/Patient")]
     public class PatientController : ApiController
     {
         SAL.IServiceProvider _document = new ServiceProvider();
