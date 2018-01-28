@@ -28,8 +28,9 @@ namespace SAL
         {
             try
             {
+                string data = JsonConvert.SerializeObject(credentials);
                 response = ServiceHelper.GetPOSTResponse(
-                    new Uri(SvcUrls.urlCheckPatientLogin), UtilityLibrary.GetValueString(credentials));
+                    new Uri(SvcUrls.urlCheckPatientLogin), UtilityLibrary.GetValueString(data));
                 if (response.HttpStatusCode == HttpStatusCode.OK)
                 {
                     int resp = JsonConvert.DeserializeObject<int>(response.ResponseMessage);
@@ -56,8 +57,9 @@ namespace SAL
         {
             try
             {
+                string data = JsonConvert.SerializeObject(credentials);
                 response = ServiceHelper.GetPOSTResponse(
-                    new Uri(SvcUrls.urlCheckStaffLogin), UtilityLibrary.GetValueString(credentials));
+                    new Uri(SvcUrls.urlCheckStaffLogin), UtilityLibrary.GetValueString(data));
                 if (response.HttpStatusCode == HttpStatusCode.OK)
                 {
                     int resp = JsonConvert.DeserializeObject<int>(response.ResponseMessage);
