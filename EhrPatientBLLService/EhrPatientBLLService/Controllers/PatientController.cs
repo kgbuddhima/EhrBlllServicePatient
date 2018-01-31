@@ -22,7 +22,7 @@ namespace EhrPatientBLLService.Controllers
 
         [Route("DeletePatient")]
         [HttpPost]
-        public HttpResponseMessage DeletePatient(int id)
+        public HttpResponseMessage DeletePatient([FromBody]int id)
         {
             try
             {
@@ -42,7 +42,7 @@ namespace EhrPatientBLLService.Controllers
 
         [Route("GetPatientById")]
         [HttpPost]
-        public HttpResponseMessage GetPatientById(int patientId)
+        public HttpResponseMessage GetPatientById([FromBody]int patientId)
         {
             try
             {
@@ -62,7 +62,7 @@ namespace EhrPatientBLLService.Controllers
 
         [Route("GetPatientByPIN")]
         [HttpPost]
-        public HttpResponseMessage GetPatientByPIN(string pin)
+        public HttpResponseMessage GetPatientByPIN([FromBody]string pin)
         {
             try
             {
@@ -82,7 +82,7 @@ namespace EhrPatientBLLService.Controllers
 
         [Route("GetPatient")]
         [HttpPost]
-        public HttpResponseMessage GetPatient(string value)
+        public HttpResponseMessage GetPatient([FromBody]string value)
         {
             try
             {
