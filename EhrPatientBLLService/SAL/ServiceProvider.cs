@@ -229,11 +229,11 @@ namespace SAL
 
                 if (patient.PatientId > 0)
                 {
-                   return InsertPatient(patient);
+                    return UpdatePatient(patient);
                 }
                 else
                 {
-                    return UpdatePatient(patient); 
+                    return InsertPatient(patient);
                 }
             }
             catch (Exception ex)
@@ -281,7 +281,7 @@ namespace SAL
         {
             Patient _patinet = null;
             try
-            { 
+            {
                 patient.PatientId = GetNextPatientID();
                 patient.PIN = string.Format("P{0}", UtilityLibrary.GetValueString(patient.PatientId).PadLeft(9, '0'));
                 Genaralizepatient(patient);
@@ -293,7 +293,11 @@ namespace SAL
                         new Uri(SvcUrls.urlInsertPatient), UtilityLibrary.GetValueString(msg));
                     if (response.HttpStatusCode == HttpStatusCode.OK)
                     {
-                        _patinet = JsonConvert.DeserializeObject<Patient>(response.ResponseMessage);
+                        string result = JsonConvert.DeserializeObject<string>(response.ResponseMessage);
+                        if (result == CommonUnit.oSuccess)
+                        {
+                            _patinet = GetPatient(patient.PatientId);
+                        }
                     }
                     else
                     {
